@@ -1,0 +1,48 @@
+<body>
+<style>h1 { font-size:20px;  }</style>
+<h1>Before generatorified</h1>
+<textarea id="prog" rows=10 cols=80>
+var result=document.querySelector("#result");
+function doit(x) {
+    for(var i=1;i<=x;i++) {
+        result.innerHTML+=i+", ";
+        console.log(i);
+        sleep(1000);
+    }
+}
+doit(3);
+doit(5);
+</textarea><button id="cv">generatorify!</button><br/>
+<h1>After generatorified</h1>
+<textarea id="converted" rows=15 cols=80></textarea>
+
+<script src="js/generatorifyRuntime.js"></script>
+<script src="js/require.js"></script>
+<script>
+function* sleep(ms) {
+    yield ms;
+}
+requirejs.config({
+    baseUrl:"js"
+});
+requirejs(["generatorify"],function (g) {
+    function cv() {
+        var converted=g.convert(document.querySelector("#prog").value);
+        document.querySelector("#converted").value=converted;
+        var gen=eval(converted);
+        setTimeout(loop,0);
+        function loop() {
+            var v=gen.next();
+            if (!v.done) {
+                setTimeout(loop,v.value);
+            }
+        }
+    }
+    cv();
+    document.querySelector("#cv").addEventListener("click",cv);
+});
+//   var syntax = esprima.parse('var answer = 42',{ range: true });
+//    console.log(JSON.stringify(syntax, null, 4));
+</script>
+<div id="result"></div>
+</body>
