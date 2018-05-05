@@ -2,6 +2,8 @@
 
 Convert JS code into 'waitable' using generator 
 
+[Demo](https://cdn.rawgit.com/hoge1e3/generatorify/c3f44d0e/index.html)
+
 ## Before generatified
 ~~~JS
 var result=document.querySelector("#result");
