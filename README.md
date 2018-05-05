@@ -34,3 +34,7 @@ function* doit(x) {
 (yield* _(doit(5)));
 })(generatorifyRuntime.toGen.bind(generatorifyRuntime))
 ~~~
+
+## Libarary used
+
+- [esprima](https://github.com/jquery/esprima)
