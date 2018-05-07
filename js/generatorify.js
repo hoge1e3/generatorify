@@ -2,20 +2,17 @@ define(["esprima","Visitor"], function (es,Visitor) {
     var V=Visitor.define({
         $this:"v",
         types:{
-            FunctionDeclaration: function (node) {
-                var v=this;
+            FunctionDeclaration: function (v,node) {
                 v.visitSub(node);
                 node.subnodes[0].src=node.subnodes[0].src.replace(/function/,"function*");
                 node.src=v.concat(node);
             },
-            FunctionExpression: function (node) {
-                var v=this;
+            FunctionExpression: function (v,node) {
                 v.visitSub(node);
                 node.subnodes[0].src=node.subnodes[0].src.replace(/function/,"function*");
                 node.src=v.concat(node);
             },
-            CallExpression: function (node) {
-                var v=this;
+            CallExpression: function (v,node) {
                 v.visitSub(node);
                 node.subnodes.unshift({src:"(yield* "+v.alias_toGen+"("});
                 node.subnodes.push({src:"))"});

@@ -1,4 +1,6 @@
 define(["Klass"],function (Klass){
+	var TYPES_NAME="types";
+	var TYPES_PREFIX=TYPES_NAME+"_";
 	VisitorClass = Klass.define({
 		$this: "$",
 		$: function ($) {
@@ -12,7 +14,7 @@ define(["Klass"],function (Klass){
 				$.path.push(node);
 				var type=$.getType(node);
 				if ($.debug) console.log("visit ",type, node.pos);
-				var v=$.types[type];
+				var v=$[TYPES_PREFIX+type];
 				if (v) return v.call($, node);
 				else if ($.def) return $.def.call($,node);
 			} finally {
@@ -36,17 +38,22 @@ define(["Klass"],function (Klass){
 		}
 	});
 	Visitor=function (types) {
-		var C=VisitorClass.inherit({
-			types:types
-			/*$:function () {
-				C.super(this,"$");
-			}*/
-		});
+		var p={};
+		p[TYPES_NAME]=types;
+		var C=Visitor.define(p);
 		return new C;
 	};
 	Visitor.define=function (p) {
-		return VisitorClass.inherit(p);
+		return VisitorClass.inherit(expandTypes(p));
 	};
+	function expandTypes(prot) {
+		var types=prot[TYPES_NAME];
+		delete prot[TYPES_NAME];
+		for (var k in types) {
+			prot[TYPES_PREFIX+k]=types[k];
+		}
+		return prot;
+	}
 	Visitor.class=VisitorClass;
 	return Visitor;
 });
