@@ -36,6 +36,9 @@
             return (function*(){return v;})();
             ---*/
         }),
+        gToVal: function (genF,thiz) {
+            return this.toVal(genF.call(thiz));
+        },
         toVal: F(function (gen) {
             /*---
             var n=gen.next();

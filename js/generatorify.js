@@ -3,14 +3,26 @@ define(["esprima","Visitor"], function (es,Visitor) {
         $this:"v",
         types:{
             FunctionDeclaration: function (v,node) {
+                //console.log("FDecl",node,node.body===node.subnodes[5]);
                 v.visitSub(node);
-                node.subnodes[0].src=node.subnodes[0].src.replace(/function/,"function*");
+                node.body.src=v.concat(node.body);
+                delete node.body.subnodes;
+                node.body.src="{return "+v.alias_gToVal+"(function*()"+node.body.src+",this);}";
+                //node.subnodes[0].src=node.subnodes[0].src.replace(/function/,"function*");
                 node.src=v.concat(node);
+                //console.log("FDecl gen",node.src, node.body.src);
             },
             FunctionExpression: function (v,node) {
                 v.visitSub(node);
-                node.subnodes[0].src=node.subnodes[0].src.replace(/function/,"function*");
+                node.body.src=v.concat(node.body);
+                delete node.body.subnodes;
+                node.body.src="{return "+v.alias_gToVal+"(function*()"+node.body.src+",this);}";
+                //node.subnodes[0].src=node.subnodes[0].src.replace(/function/,"function*");
                 node.src=v.concat(node);
+
+                /*v.visitSub(node);
+                node.subnodes[0].src=node.subnodes[0].src.replace(/function/,"function*");
+                node.src=v.concat(node);*/
             },
             CallExpression: function (v,node) {
                 v.visitSub(node);
@@ -114,10 +126,14 @@ define(["esprima","Visitor"], function (es,Visitor) {
             //console.log(id.names);
             var v=new V;
             v.alias_toGen=getAliasName(id.names,"");
+            id.names[v.alias_toGen]=1;
+            v.alias_gToVal=getAliasName(id.names,"");
             v.src=src;
             v.visit(node);
-            var conv=("(function* ("+v.alias_toGen+"){\n"+ v.concat(node)+
-            "\n})(generatorifyRuntime.toGen.bind(generatorifyRuntime))");
+            var conv=("(function* ("+v.alias_toGen+","+v.alias_gToVal+"){\n"+
+             v.concat(node)+
+            "\n})(generatorifyRuntime.toGen.bind(generatorifyRuntime),"+
+            "generatorifyRuntime.gToVal.bind(generatorifyRuntime))");
            //    console.log(JSON.stringify(syntax, null, 4));
             return conv;
         }
