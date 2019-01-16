@@ -2,7 +2,7 @@
 
 Convert JS code into 'waitable' using generator 
 
-[Demo](https://cdn.rawgit.com/hoge1e3/generatorify/c3f44d0e/index.html)
+[Demo](https://hoge1e3.github.io/generatorify/)
 
 ## Before generatified
 ~~~JS
