@@ -1,30 +1,36 @@
 //define([],function () {
 (function () {
     var SYMBOL_G="SYMBOL_G";
-    function G(o) {
-        o[SYMBOL_G]=true;
-        return o;
+    function G(g) {
+        //o[SYMBOL_G]=true;
+        this.gen=g;
+        //return o;
     }
     generatorifyRuntime={
         yieldable: function (gf) {
-            return G(gf);
+            return new G(gf());
+        },
+        yield: function (val) {
+            return new G((function*() {
+                yield val;
+            })());
         },
         isGenerator: function isGenerator(v) {
-            return v && v[SYMBOL_G];
+            return v instanceof G;//&& v[SYMBOL_G];
         },
-        toGen: F(function (v) {
+        toGen: function (v) {
             if (this.isGenerator(v)) {
-                return v;
+                return v.gen;
             }
             return (function*(){return v;})();
-        }),
+        },
         gToVal: function (genF,thiz) {
             return this.toVal(genF.call(thiz));
         },
         toVal: function (gen) {
             var n=gen.next();
             if (n.done) return n.value;
-            return G((function*() {
+            return new G((function*() {
                 while(true) {
                     yield n.value;
                     n=gen.next();
