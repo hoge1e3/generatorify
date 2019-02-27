@@ -7,12 +7,30 @@ function doit(x) {
     for(var i=1;i<=x;i++) {
         result.innerHTML+=i+", ";
         console.log(i);
-        sleep(1000);
+        generatorifyRuntime.yield(1000);
     }
 }
 doit(3);
 doit(5);
-</textarea><button id="cv">generatorify!</button><br/>
+</textarea>
+<!--
+var C=function (x,y) {this.x=x;this.y=y;}
+C.prototype.slide=function (vx,vy) {
+    for(var i=0;i<5; i++) {
+        this.x+=vx; this.y+=vy;
+        console.log(this.x,this.y);
+        generatorifyRuntime.yield(100);
+    }
+};
+function main(x,y) {
+    var c=new C(x,y);
+    c.slide(1,2);
+}
+main(3,5);
+main(30,50);
+
+    -->
+<button id="cv">generatorify!</button><br/>
 <h1>After generatorified</h1>
 <textarea id="converted" rows=15 cols=80></textarea>
 

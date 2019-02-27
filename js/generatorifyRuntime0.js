@@ -1,6 +1,5 @@
 //define([],function () {
 (function () {
-    var SYMBOL_G="SYMBOL_G";
     function G(g) {
         //o[SYMBOL_G]=true;
         this.gen=g;
@@ -15,11 +14,8 @@
                 yield val;
             })());
         },
-        isGenerator: function isGenerator(v) {
-            return v instanceof G;//&& v[SYMBOL_G];
-        },
         toGen: function (v) {
-            if (this.isGenerator(v)) {
+            if (v instanceof G) {
                 return v.gen;
             }
             return (function*(){return v;})();
